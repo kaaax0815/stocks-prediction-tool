@@ -1,0 +1,21 @@
+{
+  "extends": [
+    "next/core-web-vitals",
+    "prettier/prettier"
+  ],
+  "plugins": [
+    "simple-import-sort",
+    "prettier"
+  ],
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {},
+      {
+        "usePrettierrc": true
+      }
+    ],
+    "simple-import-sort/imports": "error",
+    "curly": "warn"
+  }
+}

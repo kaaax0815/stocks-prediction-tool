@@ -1,0 +1,33 @@
+{
+  "folders": [
+    {
+      "name": "Root",
+      "path": "../"
+    },
+    {
+      "name": "Frontend",
+      "path": "../frontend"
+    },
+    {
+      "name": "Backend",
+      "path": "../backend"
+    },
+  ],
+  "settings": {
+    "files.exclude": {
+       "node_modules/": true
+    },
+    "files.eol": "\n",
+    "editor.tabSize": 2,
+    "editor.useTabStops": false,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs": "active",
+    "editor.linkedEditing": true
+  },
+  "extensions": {
+    "recommendations": ["aaron-bond.better-comments", "streetsidesoftware.code-spell-checker", "irongeek.vscode-env", "dbaeumer.vscode-eslint", "streetsidesoftware.code-spell-checker-german", "visualstudioexptteam.vscodeintellicode", "ms-python.python"]
+  }
+}

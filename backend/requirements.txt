@@ -1,1 +1,5 @@
 pylint
+flask
+alpaca-trade-api
+python-dotenv
+plotly

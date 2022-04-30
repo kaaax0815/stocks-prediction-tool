@@ -39,6 +39,24 @@ Open Workspace:
 code .vscode/project.code-workspace
 ```
 
+### ✨ Contribute
+
+Please follow this commit message style:
+
+```text
+<folder>: <Short imperative description of the change in present tense>
+
+<More concise description of the change>
+```
+
+Example:
+
+```text
+backend: Add new crawler
+
+Add new crawler for the stock market
+```
+
 ### 📅 Future Plans
 
 - [Paper Trading with Alpaca Trading](https://alpaca.markets/docs/trading/paper-trading/)

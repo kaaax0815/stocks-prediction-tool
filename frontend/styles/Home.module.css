@@ -1,5 +1,7 @@
 .container {
   padding: 0 2rem;
+  width: 80%;
+  margin: auto;
 }
 
 .main {
@@ -113,4 +115,9 @@
     width: 100%;
     flex-direction: column;
   }
+}
+
+.field {
+  width: 30rem;
+  max-width: 90%;
 }

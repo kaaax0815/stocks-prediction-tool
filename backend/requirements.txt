@@ -3,3 +3,4 @@ flask
 alpaca-trade-api
 python-dotenv
 plotly
+flask-cors

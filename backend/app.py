@@ -3,12 +3,15 @@ from flask import Flask, request
 from dotenv import load_dotenv
 from alpaca_trade_api.rest import REST, TimeFrame
 import plotly.graph_objects as go
+from flask_cors import CORS
 
 api = REST()
 
 load_dotenv()
 
 app = Flask(__name__)
+
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 @app.route('/bars')
 def bars():

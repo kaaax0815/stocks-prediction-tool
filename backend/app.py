@@ -39,3 +39,8 @@ def bars():
     return {"error": "No data available"}, 404
   df = pd.DataFrame(res).to_json(orient="records")
   return df
+
+
+@app.route('/symbols')
+def symbols():
+  return json.dumps(client.stock_symbols('US'));

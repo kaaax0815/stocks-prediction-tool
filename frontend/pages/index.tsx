@@ -2,20 +2,27 @@ import { Autocomplete, TextField } from '@mui/material';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ChangeEvent, FormEvent, SyntheticEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, SyntheticEvent, useEffect, useState } from 'react';
 
 import styles from '../styles/Home.module.css';
-import Stocks from './[stocks]';
+import { getSymbols, Symbol } from '../util/api';
 
 function Home() {
-  const stockOptions = [
-    { label: 'TSLA - Tesla', id: 1 },
-    { label: 'AAPL - Apple', id: 2 },
-    { label: 'NVD - Nvidia', id: 3 },
-    { label: 'MSF - Microsoft', id: 4 }
-  ];
+  const [data, setData] = useState({ loading: true, data: undefined as Symbol[] | undefined });
+
+  // is being executed when state of stocks is changed
+  useEffect(() => {
+    getSymbols().then((x) => {
+      setData({ loading: false, data: x });
+    });
+  }, []); // empty array would mean reloading only at first rendering of page
 
   const router = useRouter();
+  // default value is empty string; stores current input value of desired stock
+  const [stock, setStock] = useState('');
+  if (data.loading) {
+    return <p>Loading</p>;
+  }
 
   function handleChosenValue(value: string | undefined) {
     if (!value) {
@@ -23,9 +30,6 @@ function Home() {
     }
     router.push(`/${value.split('-')[0].trim()}`);
   }
-
-  // default value is empty string; stores current input value of desired stock
-  const [stock, setStock] = useState('');
 
   return (
     <div className={styles.container}>
@@ -47,7 +51,7 @@ function Home() {
 
         <Autocomplete
           disablePortal
-          options={stockOptions}
+          options={data.data!.map((x, i) => ({ label: x.symbol + ' - ' + x.description, id: i }))}
           sx={{ width: 300 }}
           onChange={(_, value) => handleChosenValue(value?.label)}
           renderInput={(params) => <TextField {...params} label="Desired Stock" />}

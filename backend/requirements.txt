@@ -1,6 +1,6 @@
 pylint
 flask
-alpaca-trade-api
+finnhub-python
 python-dotenv
-plotly
 flask-cors
+pandas

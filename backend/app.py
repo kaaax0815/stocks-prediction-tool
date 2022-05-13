@@ -1,11 +1,12 @@
 import json
+import os
 from flask import Flask, request
+import finnhub
+import pandas as pd
 from dotenv import load_dotenv
-from alpaca_trade_api.rest import REST, TimeFrame
-import plotly.graph_objects as go
 from flask_cors import CORS
 
-api = REST()
+client = finnhub.Client(os.environ['FINNHUB_KEY'])
 
 load_dotenv()
 
@@ -19,7 +20,7 @@ def bars():
   Get Stock Bars
 
   :param str stock: Stock Symbol
-  :param str timeframe: Timeframe e.g. Minute, Hour, Day, Week, Month, Year
+  :param str timeframe: Timeframe e.g. 1, 5, 15, 30, 60, D, W, M
   :param str start: Start Date
   :param str end: End Date
 
@@ -27,9 +28,14 @@ def bars():
 
   :example: `[{"open":296.27,"high":327.85,"low":292.75,"close":309.51,"volume":735487816,"trade_count":6103173,"vwap":312.244305}]`
   """
-  stock = request.args.get('stock')
-  timeframe = request.args.get('timeframe', 'Day')
-  start = request.args.get('start', '2021-01-01')
-  end = request.args.get('end', '2021-12-31')
-  bars = api.get_bars(stock, TimeFrame.__dict__[timeframe], start, end).df
-  return bars.to_json(orient='records')
+  symbol = request.args.get('symbol')
+  if (symbol is None): 
+    return {"error": "No symbol provided"}, 400
+  timeframe = request.args.get('timeframe', 'D')
+  fromTimestamp = request.args.get('from', "1609459200")
+  toTimestamp = request.args.get('to', "1640908800")
+  res = client.stock_candles(symbol, timeframe, fromTimestamp, toTimestamp)
+  if (res['s'] == "no_data"):
+    return {"error": "No data available"}, 404
+  df = pd.DataFrame(res).to_json(orient="records")
+  return df

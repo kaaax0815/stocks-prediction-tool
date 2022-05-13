@@ -21,8 +21,8 @@ def bars():
 
   :param str stock: Stock Symbol
   :param str timeframe: Timeframe e.g. 1, 5, 15, 30, 60, D, W, M
-  :param str start: Start Date
-  :param str end: End Date
+  :param str from: Start Date as unix timestamp
+  :param str to: End Date as unix timestamp
 
   :return: a json Array of the provided stock with the provided timeframe within the provided range
 

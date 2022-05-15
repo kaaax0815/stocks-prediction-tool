@@ -7,13 +7,22 @@ import { ChangeEvent, FormEvent, SyntheticEvent, useEffect, useState } from 'rea
 import styles from '../styles/Home.module.css';
 import { getSymbols, Symbol } from '../util/api';
 
+export interface Autocomplete {
+  label: string;
+  id: number;
+}
+
 function Home() {
-  const [data, setData] = useState({ loading: true, data: undefined as Symbol[] | undefined });
+  const [data, setData] = useState({
+    loading: true,
+    data: undefined as Autocomplete[] | undefined
+  });
 
   // is being executed when state of stocks is changed
   useEffect(() => {
     getSymbols().then((x) => {
-      setData({ loading: false, data: x });
+      const labels = x.map((x, i) => ({ label: x.symbol + ' - ' + x.description, id: i }));
+      setData({ loading: false, data: labels });
     });
   }, []); // empty array would mean reloading only at first rendering of page
 
@@ -51,7 +60,7 @@ function Home() {
 
         <Autocomplete
           disablePortal
-          options={data.data!.map((x, i) => ({ label: x.symbol + ' - ' + x.description, id: i }))}
+          options={data.data!}
           sx={{ width: 300 }}
           onChange={(_, value) => handleChosenValue(value?.label)}
           renderInput={(params) => <TextField {...params} label="Desired Stock" />}

@@ -1,13 +1,12 @@
 import { Autocomplete, TextField } from '@mui/material';
 import Head from 'next/head';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ChangeEvent, FormEvent, SyntheticEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import styles from '../styles/Home.module.css';
-import { getSymbols, Symbol } from '../util/api';
+import { getSymbols } from '../util/api';
 
-export interface Autocomplete {
+export interface AutoComplete {
   label: string;
   id: number;
 }
@@ -15,8 +14,10 @@ export interface Autocomplete {
 function Home() {
   const [data, setData] = useState({
     loading: true,
-    data: undefined as Autocomplete[] | undefined
+    data: undefined as AutoComplete[] | undefined
   });
+
+  const router = useRouter();
 
   // is being executed when state of stocks is changed
   useEffect(() => {
@@ -26,18 +27,15 @@ function Home() {
     });
   }, []); // empty array would mean reloading only at first rendering of page
 
-  const router = useRouter();
-  // default value is empty string; stores current input value of desired stock
-  const [stock, setStock] = useState('');
-  if (data.loading) {
-    return <p>Loading</p>;
-  }
-
   function handleChosenValue(value: string | undefined) {
     if (!value) {
       return;
     }
     router.push(`/${value.split('-')[0].trim()}`);
+  }
+
+  if (data.loading) {
+    return <p>Loading</p>;
   }
 
   return (

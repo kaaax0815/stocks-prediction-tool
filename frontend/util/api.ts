@@ -1,5 +1,8 @@
 export async function getBars(stock: string): Promise<StockRecord[]> {
-  const request = await fetch(`http://127.0.0.1:5000/bars?symbol=${stock}`);
+  const to = Math.round(new Date().getTime() / 1000);
+  const secondsInAYear = 60 * 60 * 24 * 30 * 12;
+  const from = to - secondsInAYear;
+  const request = await fetch(`http://127.0.0.1:5000/bars?symbol=${stock}&from=${from}&to=${to}`);
   if (!request.ok) {
     throw new Error(request.statusText);
   }

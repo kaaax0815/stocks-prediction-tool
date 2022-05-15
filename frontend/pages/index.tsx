@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
+import AutocompleteListBox from '../components/AutocompleteListBox';
 import styles from '../styles/Home.module.css';
 import { getSymbols } from '../util/api';
 
@@ -59,6 +60,7 @@ function Home() {
         <Autocomplete
           disablePortal
           options={data.data!}
+          ListboxComponent={AutocompleteListBox}
           sx={{ width: 300 }}
           onChange={(_, value) => handleChosenValue(value?.label)}
           renderInput={(params) => <TextField {...params} label="Desired Stock" />}

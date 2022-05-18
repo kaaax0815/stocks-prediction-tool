@@ -56,7 +56,8 @@ def getAverageSentiment():
         sumOfSentiment += entity.sentiment_score;
         counter+=1
 
-  return sumOfSentiment / counter
+  averageSentiment = round(sumOfSentiment / counter, 4)
+  return json.dumps({"averageSentiment": averageSentiment})
 
 
 @app.route('/symbols')

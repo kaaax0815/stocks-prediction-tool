@@ -6,6 +6,9 @@ import pandas as pd
 from dotenv import load_dotenv
 from flask_cors import CORS
 
+from util.newsApi import getNews
+
+
 client = finnhub.Client(os.environ['FINNHUB_KEY'])
 
 load_dotenv()
@@ -39,6 +42,21 @@ def bars():
     return {"error": "No data available"}, 404
   df = pd.DataFrame(res).to_json(orient="records")
   return df
+
+
+@app.route('/sentiment')
+def getAverageSentiment():
+  counter = 0
+  sumOfSentiment = 0.0
+  symbol = request.args.get('symbol')
+
+  for data in getNews(symbol).data:
+    for entity in data.entities:
+      if entity.sentiment_score is not None:
+        sumOfSentiment += entity.sentiment_score;
+        counter+=1
+
+  return sumOfSentiment / counter
 
 
 @app.route('/symbols')

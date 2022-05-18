@@ -2,10 +2,14 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
 import Chart from '../components/Chart';
-import { getBars, StockRecord } from '../util/api';
+import { AverageSentiment, getAverageSentiment, getBars, StockRecord } from '../util/api';
 
 export default function Stocks() {
   const [data, setData] = useState({ loading: true, data: undefined as StockRecord[] | undefined });
+  const [averageSentiment, setAverageSentiment] = useState({
+    loading: true,
+    data: undefined as AverageSentiment | undefined
+  });
 
   const router = useRouter();
   const { stocks } = router.query;
@@ -18,9 +22,13 @@ export default function Stocks() {
     getBars(stocks as string).then((x) => {
       setData({ loading: false, data: x });
     });
+    getAverageSentiment(stocks as string).then((averageSentiment) => {
+      setAverageSentiment({ loading: false, data: averageSentiment });
+      console.log(averageSentiment);
+    });
   }, [stocks]); // empty array would mean reloading only at first rendering of page
 
-  if (data.loading) {
+  if (data.loading || averageSentiment.loading) {
     return <p>Loading</p>;
   }
 
@@ -35,6 +43,7 @@ export default function Stocks() {
   return (
     <div>
       <Chart data={timeAveragePrice} />
+      <p>{averageSentiment.data!.averageSentiment}</p>
     </div>
   );
 }

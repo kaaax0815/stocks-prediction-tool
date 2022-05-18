@@ -14,6 +14,16 @@ export async function getBars(stock: string): Promise<StockRecord[]> {
   return json;
 }
 
+export async function getAverageSentiment(stock: string): Promise<AverageSentiment> {
+  const request = await fetch(`${API_URL}/sentiment?symbol=${stock}`);
+  if (!request.ok) {
+    throw new Error(request.statusText);
+  }
+
+  const averageSentiment = await request.json();
+  return averageSentiment;
+}
+
 export async function getSymbols(): Promise<Symbol[]> {
   const request = await fetch(`${API_URL}/symbols`);
   if (!request.ok) {
@@ -45,4 +55,8 @@ export interface Symbol {
   symbol: string;
   symbol2: string;
   type: string;
+}
+
+export interface AverageSentiment {
+  averageSentiment: number;
 }

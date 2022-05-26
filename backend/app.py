@@ -49,8 +49,10 @@ def getAverageSentiment():
   counter = 0
   sumOfSentiment = 0.0
   symbol = request.args.get('symbol')
-
-  for data in getNews(symbol).data:
+  news = getNews(symbol)
+  if hasattr(news, "error"):
+    return json.dumps({"error": "quota reached"})
+  for data in news.data:
     for entity in data.entities:
       if entity.sentiment_score is not None:
         sumOfSentiment += entity.sentiment_score;
@@ -63,3 +65,15 @@ def getAverageSentiment():
 @app.route('/symbols')
 def symbols():
   return json.dumps(client.stock_symbols('US'));
+
+@app.route('/company')
+def company():
+  """
+  Get Company Profile
+
+  :param symbol: Symbol of the stock
+  """
+  symbol = request.args.get("symbol")
+  if symbol is None:
+    return {"error": "No symbol provided"}, 400
+  return json.dumps(client.company_profile2(symbol=symbol));

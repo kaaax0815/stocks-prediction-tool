@@ -85,7 +85,7 @@ def sentiment():
         counter+=1
 
   if counter == 0:
-    return {"averageSentiment": 0.0}
+    return {"averageSentiment": None}
 
   averageSentiment = round(sumOfSentiment / counter, 4)
 

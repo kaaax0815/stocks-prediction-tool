@@ -34,6 +34,16 @@ export async function getSymbols(): Promise<Symbol[]> {
   return json;
 }
 
+export async function getCompany(stock: string): Promise<Company> {
+  const request = await fetch(`${API_URL}/company?symbol=${stock}`);
+  if (!request.ok) {
+    throw new Error(request.statusText);
+  }
+
+  const json = await request.json();
+  return json;
+}
+
 export interface StockRecord {
   c: number;
   h: number;
@@ -59,4 +69,19 @@ export interface Symbol {
 
 export interface AverageSentiment {
   averageSentiment: number;
+}
+
+export interface Company {
+  country: string;
+  currency: string;
+  exchange: string;
+  finnhubIndustry: string;
+  ipo: string;
+  logo: string;
+  marketCapitalization: number;
+  name: string;
+  phone: string;
+  shareOutstanding: number;
+  ticker: string;
+  weburl: string;
 }

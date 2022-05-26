@@ -5,86 +5,53 @@ import {
   faQuestion
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
-import Chart from '../components/Chart';
+const Chart = dynamic(() => import('../components/Chart'), { ssr: false });
 import styles from '../styles/Stock.module.css';
-import { Bar, Company, getBars, getCompany, getSentiment, Sentiment } from '../util/api';
-import { StateType } from '../util/stateType';
+import {
+  Bar,
+  Company,
+  getBars,
+  getCompany,
+  getSentiment,
+  getSymbols,
+  Sentiment
+} from '../util/api';
 
-export default function Stocks() {
-  const [bars, setBars] = useState<StateType<Bar[]>>({
-    loading: true,
-    data: undefined
-  });
-
-  const [sentiment, setSentiment] = useState<StateType<Sentiment>>({
-    loading: true,
-    data: undefined
-  });
-
-  const [company, setCompany] = useState<StateType<Company>>({
-    loading: true,
-    data: undefined
-  });
-
-  const router = useRouter();
-  const { stock } = router.query as { stock: string };
-
-  useEffect(() => {
-    if (!stock) {
-      return;
-    }
-    getBars(stock).then((x) => {
-      setBars({ loading: false, data: x });
-    });
-    getSentiment(stock).then((averageSentiment) => {
-      setSentiment({ loading: false, data: averageSentiment });
-    });
-    getCompany(stock).then((company) => {
-      setCompany({ loading: false, data: company });
-    });
-  }, [stock]);
+export default function Stocks(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const { bars, sentiment, company } = props;
 
   const iconToDisplay = useMemo(() => {
-    if (sentiment.loading === true) {
+    if (sentiment.averageSentiment === null) {
       return faQuestion;
-    }
-    if (sentiment.data.averageSentiment === null) {
-      return faQuestion;
-    } else if (sentiment.data.averageSentiment < -0.1) {
+    } else if (sentiment.averageSentiment < -0.1) {
       return faArrowTrendDown;
-    } else if (sentiment.data.averageSentiment > -0.1 && sentiment.data.averageSentiment < 0.1) {
+    } else if (sentiment.averageSentiment > -0.1 && sentiment.averageSentiment < 0.1) {
       return faArrowRight;
     } else {
       return faArrowTrendUp;
     }
-  }, [sentiment.data, sentiment.loading]);
+  }, [sentiment.averageSentiment]);
 
   const timeAveragePrice = useMemo(() => {
-    if (bars.loading === true) {
-      return null;
-    }
-    return bars.data.map((x) => {
+    return bars.map((x) => {
       return {
         ...x,
         average: ((x.h + x.l) / 2).toFixed(2),
         date: new Date(x.t * 1000)
       };
     });
-  }, [bars.data, bars.loading]);
-
-  if (bars.loading || sentiment.loading || company.loading || !timeAveragePrice) {
-    return <p>Loading</p>;
-  }
+  }, [bars]);
 
   return (
     <>
       <div className={styles.header}>
-        <Image src={company.data.logo} alt="" width="50px" height="50px" />
-        <h1>{company.data.name}</h1>
+        <Image src={company.logo} alt="" width="50px" height="50px" />
+        <h1>{company.name}</h1>
       </div>
       <div className={styles.body}>
         <div className={styles.chart}>
@@ -97,3 +64,29 @@ export default function Stocks() {
     </>
   );
 }
+
+export interface StockParams {
+  bars: Bar[];
+  sentiment: Sentiment;
+  company: Company;
+}
+
+export const getServerSideProps: GetServerSideProps<StockParams> = async (context) => {
+  // 5 min cache
+  context.res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=300');
+  const symbol = context.params!.stock as string;
+  const symbols = await getSymbols();
+  if (symbols.findIndex((x) => x.symbol === symbol) === -1) {
+    return { notFound: true };
+  }
+  const bars = await getBars(symbol);
+  const sentiment = await getSentiment(symbol);
+  const company = await getCompany(symbol);
+  return {
+    props: {
+      bars,
+      sentiment,
+      company
+    }
+  };
+};

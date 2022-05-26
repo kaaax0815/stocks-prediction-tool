@@ -10,20 +10,16 @@ import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 
 import Chart from '../components/Chart';
-import {
-  AverageSentiment,
-  Company,
-  getAverageSentiment,
-  getBars,
-  getCompany,
-  StockRecord
-} from '../util/api';
+import { Bar, Company, getBars, getCompany, getSentiment, Sentiment } from '../util/api';
 import { StateType } from '../util/stateType';
 
 export default function Stocks() {
-  const [data, setData] = useState<StateType<StockRecord[]>>({ loading: true, data: undefined });
+  const [bars, setBars] = useState<StateType<Bar[]>>({
+    loading: true,
+    data: undefined
+  });
 
-  const [averageSentiment, setAverageSentiment] = useState<StateType<AverageSentiment>>({
+  const [sentiment, setSentiment] = useState<StateType<Sentiment>>({
     loading: true,
     data: undefined
   });
@@ -41,10 +37,10 @@ export default function Stocks() {
       return;
     }
     getBars(stock).then((x) => {
-      setData({ loading: false, data: x });
+      setBars({ loading: false, data: x });
     });
-    getAverageSentiment(stock).then((averageSentiment) => {
-      setAverageSentiment({ loading: false, data: averageSentiment });
+    getSentiment(stock).then((averageSentiment) => {
+      setSentiment({ loading: false, data: averageSentiment });
     });
     getCompany(stock).then((company) => {
       setCompany({ loading: false, data: company });
@@ -52,37 +48,34 @@ export default function Stocks() {
   }, [stock]);
 
   const iconToDisplay = useMemo(() => {
-    if (averageSentiment.loading === true) {
+    if (sentiment.loading === true) {
       return faQuestion;
     }
-    if (averageSentiment.data.averageSentiment === null) {
+    if (sentiment.data.averageSentiment === null) {
       return faQuestion;
-    } else if (averageSentiment.data.averageSentiment < -0.1) {
+    } else if (sentiment.data.averageSentiment < -0.1) {
       return faArrowTrendDown;
-    } else if (
-      averageSentiment.data.averageSentiment > -0.1 &&
-      averageSentiment.data.averageSentiment < 0.1
-    ) {
+    } else if (sentiment.data.averageSentiment > -0.1 && sentiment.data.averageSentiment < 0.1) {
       return faArrowRight;
     } else {
       return faArrowTrendUp;
     }
-  }, [averageSentiment.data, averageSentiment.loading]);
+  }, [sentiment.data, sentiment.loading]);
 
   const timeAveragePrice = useMemo(() => {
-    if (data.loading === true) {
+    if (bars.loading === true) {
       return null;
     }
-    return data.data.map((x) => {
+    return bars.data.map((x) => {
       return {
         ...x,
         average: ((x.h + x.l) / 2).toFixed(2),
         date: new Date(x.t * 1000)
       };
     });
-  }, [data.data, data.loading]);
+  }, [bars.data, bars.loading]);
 
-  if (data.loading || averageSentiment.loading || company.loading || !timeAveragePrice) {
+  if (bars.loading || sentiment.loading || company.loading || !timeAveragePrice) {
     return <p>Loading</p>;
   }
 

@@ -2,7 +2,7 @@ import { dateToTimestamp, subtractYears } from './date';
 
 const API_URL = 'http://127.0.0.1:5000';
 
-export async function getBars(stock: string): Promise<StockRecord[]> {
+export async function getBars(stock: string): Promise<Bar[]> {
   const to = dateToTimestamp(new Date());
   const from = subtractYears(to, 1);
   const request = await fetch(`${API_URL}/bars?symbol=${stock}&from=${from}&to=${to}`);
@@ -14,7 +14,7 @@ export async function getBars(stock: string): Promise<StockRecord[]> {
   return json;
 }
 
-export async function getAverageSentiment(stock: string): Promise<AverageSentiment> {
+export async function getSentiment(stock: string): Promise<Sentiment> {
   const request = await fetch(`${API_URL}/sentiment?symbol=${stock}`);
   if (!request.ok) {
     throw new Error(request.statusText);
@@ -44,7 +44,7 @@ export async function getCompany(stock: string): Promise<Company> {
   return json;
 }
 
-export interface StockRecord {
+export interface Bar {
   c: number;
   h: number;
   l: number;
@@ -67,7 +67,7 @@ export interface Symbol {
   type: string;
 }
 
-export interface AverageSentiment {
+export interface Sentiment {
   averageSentiment: number | null;
 }
 

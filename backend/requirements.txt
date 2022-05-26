@@ -4,4 +4,4 @@ finnhub-python
 python-dotenv
 flask-cors
 pandas
-namedtupled
+python-box

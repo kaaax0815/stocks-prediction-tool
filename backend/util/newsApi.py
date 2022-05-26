@@ -1,12 +1,8 @@
-from ast import List
-from collections import namedtuple
 import http.client, urllib.parse
 import string
-from typing import Set
 import json
-import namedtupled
-
-from numpy import double
+from box import Box
+import os
 
 class Highlights():
     def __init__(self, highlight, sentiment, highlighted_in) -> None:
@@ -65,7 +61,7 @@ def getNews(symbol) -> News:
     conn = http.client.HTTPSConnection('api.marketaux.com')
 
     params = urllib.parse.urlencode({
-        'api_token': 'eZeFoXuWqUq8ks6E0vnSyTmT3tqflTJROQcboLLJ',
+        'api_token': os.environ['MARKETAUX_KEY'],
         'symbols': symbol,
         'limit': 50,
         'filter_entities': True
@@ -80,6 +76,6 @@ def getNews(symbol) -> News:
 
     dataAsDictionary = json.loads(data)
 
-    dataAsObject = namedtupled.map(dataAsDictionary)
+    dataAsObject = Box(dataAsDictionary)
 
     return dataAsObject

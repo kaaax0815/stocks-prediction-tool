@@ -53,8 +53,7 @@ function Home() {
         </h1>
 
         <p className={styles.description}>
-          Get started by choosing a stock you would like to be predicted.
-          <br /> ~by Bernd Storath and Joshua Pfennig
+          Get started by choosing a stock you would like to get predicted
         </p>
 
         <Autocomplete
@@ -66,6 +65,26 @@ function Home() {
           renderInput={(params) => <TextField {...params} label="Desired Stock" />}
         />
       </main>
+
+      <footer className={styles.footer}>
+        <div>
+          by{' '}
+          <a href="https://github.com/kaaax0815" target="_blank" rel="noreferrer">
+            Bernd Storath
+          </a>{' '}
+          and{' '}
+          <a href="https://github.com/jshProgrammer" target="_blank" rel="noreferrer">
+            Joshua Pfennig
+          </a>
+        </div>
+        <a
+          href="https://github.com/kaaax0815/stocks-prediction-tool"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Source Code
+        </a>
+      </footer>
     </div>
   );
 }

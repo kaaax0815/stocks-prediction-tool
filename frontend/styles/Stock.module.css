@@ -1,0 +1,26 @@
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+
+.chart {
+  padding: 20px;
+}
+
+.trend {
+  padding: 20px;
+}
+
+@media screen and (max-width: 768px) {
+  .body {
+    flex-direction: column-reverse;
+  }
+}

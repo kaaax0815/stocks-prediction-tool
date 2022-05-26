@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 
 import Chart from '../components/Chart';
+import styles from '../styles/Stock.module.css';
 import { Bar, Company, getBars, getCompany, getSentiment, Sentiment } from '../util/api';
 import { StateType } from '../util/stateType';
 
@@ -81,28 +82,15 @@ export default function Stocks() {
 
   return (
     <>
-      <div
-        className="header"
-        style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-      >
+      <div className={styles.header}>
         <Image src={company.data.logo} alt="" width="50px" height="50px" />
         <h1>{company.data.name}</h1>
       </div>
-      <div
-        style={{
-          height: 'fit-content',
-          verticalAlign: 'middle',
-          display: 'flex',
-          flexDirection: 'row',
-          alignContent: 'center',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}
-      >
-        <div style={{ padding: '20px', float: 'left' }}>
+      <div className={styles.body}>
+        <div className={styles.chart}>
           <Chart data={timeAveragePrice} />
         </div>
-        <div style={{ padding: '20px', float: 'left', height: 'inherit', verticalAlign: 'middle' }}>
+        <div className={styles.trend}>
           <FontAwesomeIcon icon={iconToDisplay} size="6x" />
         </div>
       </div>

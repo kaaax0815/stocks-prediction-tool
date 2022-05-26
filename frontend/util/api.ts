@@ -68,7 +68,7 @@ export interface Symbol {
 }
 
 export interface AverageSentiment {
-  averageSentiment: number;
+  averageSentiment: number | null;
 }
 
 export interface Company {

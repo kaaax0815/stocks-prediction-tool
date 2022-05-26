@@ -2,12 +2,12 @@ import {
   faArrowRight,
   faArrowTrendDown,
   faArrowTrendUp,
-  IconDefinition
+  faQuestion
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import Chart from '../components/Chart';
 import {
@@ -18,22 +18,24 @@ import {
   getCompany,
   StockRecord
 } from '../util/api';
+import { StateType } from '../util/stateType';
 
 export default function Stocks() {
-  const [data, setData] = useState({ loading: true, data: undefined as StockRecord[] | undefined });
-  const [averageSentiment, setAverageSentiment] = useState({
+  const [data, setData] = useState<StateType<StockRecord[]>>({ loading: true, data: undefined });
+
+  const [averageSentiment, setAverageSentiment] = useState<StateType<AverageSentiment>>({
     loading: true,
-    data: undefined as AverageSentiment | undefined
+    data: undefined
   });
-  const [company, setCompany] = useState({
+
+  const [company, setCompany] = useState<StateType<Company>>({
     loading: true,
-    data: undefined as Company | undefined
+    data: undefined
   });
 
   const router = useRouter();
   const { stocks } = router.query;
 
-  // is being executed when state of stocks is changed
   useEffect(() => {
     if (!stocks) {
       return;
@@ -47,33 +49,42 @@ export default function Stocks() {
     getCompany(stocks as string).then((company) => {
       setCompany({ loading: false, data: company });
     });
-  }, [stocks]); // empty array would mean reloading only at first rendering of page
+  }, [stocks]);
 
-  if (data.loading || averageSentiment.loading || company.loading) {
+  const iconToDisplay = useMemo(() => {
+    if (averageSentiment.loading === true) {
+      return faQuestion;
+    }
+    if (averageSentiment.data.averageSentiment === null) {
+      return faQuestion;
+    } else if (averageSentiment.data.averageSentiment < -0.1) {
+      return faArrowTrendDown;
+    } else if (
+      averageSentiment.data.averageSentiment > -0.1 &&
+      averageSentiment.data.averageSentiment < 0.1
+    ) {
+      return faArrowRight;
+    } else {
+      return faArrowTrendUp;
+    }
+  }, [averageSentiment.data, averageSentiment.loading]);
+
+  const timeAveragePrice = useMemo(() => {
+    if (data.loading === true) {
+      return null;
+    }
+    return data.data.map((x) => {
+      return {
+        ...x,
+        average: ((x.h + x.l) / 2).toFixed(2),
+        date: new Date(x.t * 1000)
+      };
+    });
+  }, [data.data, data.loading]);
+
+  if (data.loading || averageSentiment.loading || company.loading || !timeAveragePrice) {
     return <p>Loading</p>;
   }
-
-  const timeAveragePrice = data.data!.map((x) => {
-    return {
-      ...x,
-      average: ((x.h + x.l) / 2).toFixed(2),
-      date: new Date(x.t * 1000)
-    };
-  });
-
-  let iconToDisplay: IconDefinition;
-  if (averageSentiment.data!.averageSentiment < -0.1) {
-    iconToDisplay = faArrowTrendDown;
-  } else if (
-    averageSentiment.data!.averageSentiment > -0.1 &&
-    averageSentiment.data!.averageSentiment < 0.1
-  ) {
-    iconToDisplay = faArrowRight;
-  } else {
-    iconToDisplay = faArrowTrendUp;
-  }
-
-  // <p>{averageSentiment.data!.averageSentiment}</p>
 
   return (
     <>
@@ -81,8 +92,8 @@ export default function Stocks() {
         className="header"
         style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
       >
-        <Image src={company.data!.logo} alt="" width="50px" height="50px" />
-        <h1>{company.data!.name}</h1>
+        <Image src={company.data.logo} alt="" width="50px" height="50px" />
+        <h1>{company.data.name}</h1>
       </div>
       <div
         style={{

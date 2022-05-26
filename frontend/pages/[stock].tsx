@@ -34,22 +34,22 @@ export default function Stocks() {
   });
 
   const router = useRouter();
-  const { stocks } = router.query;
+  const { stock } = router.query as { stock: string };
 
   useEffect(() => {
-    if (!stocks) {
+    if (!stock) {
       return;
     }
-    getBars(stocks as string).then((x) => {
+    getBars(stock).then((x) => {
       setData({ loading: false, data: x });
     });
-    getAverageSentiment(stocks as string).then((averageSentiment) => {
+    getAverageSentiment(stock).then((averageSentiment) => {
       setAverageSentiment({ loading: false, data: averageSentiment });
     });
-    getCompany(stocks as string).then((company) => {
+    getCompany(stock).then((company) => {
       setCompany({ loading: false, data: company });
     });
-  }, [stocks]);
+  }, [stock]);
 
   const iconToDisplay = useMemo(() => {
     if (averageSentiment.loading === true) {

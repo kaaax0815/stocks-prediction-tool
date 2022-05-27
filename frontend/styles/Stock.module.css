@@ -1,9 +1,11 @@
 .header {
+  display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .main {
+  display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: row;
@@ -19,7 +21,7 @@
 }
 
 @media screen and (max-width: 768px) {
-  .body {
+  .main {
     flex-direction: column-reverse;
   }
 }

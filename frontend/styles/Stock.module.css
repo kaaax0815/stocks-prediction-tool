@@ -1,3 +1,8 @@
+.main {
+  margin: auto;
+  width: 75vw;
+}
+
 .header {
   display: flex;
   justify-content: center;
@@ -12,8 +17,8 @@
 }
 
 .chart {
+  width: 100%;
   padding: 20px;
-  width: 80vw;
 }
 
 .trend {

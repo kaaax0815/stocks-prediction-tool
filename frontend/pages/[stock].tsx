@@ -22,21 +22,22 @@ import {
   Sentiment
 } from '../util/api';
 import { timestampToDate } from '../util/date';
+import getIconToDisplay from '../util/iconToDisplay';
 
 export default function Stocks(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { bars, sentiment, company } = props;
 
-  const iconToDisplay = useMemo(() => {
-    if (sentiment.averageSentiment === null) {
-      return faQuestion;
-    } else if (sentiment.averageSentiment < -0.1) {
-      return faArrowTrendDown;
-    } else if (sentiment.averageSentiment > -0.1 && sentiment.averageSentiment < 0.1) {
-      return faArrowRight;
-    } else {
-      return faArrowTrendUp;
-    }
-  }, [sentiment.averageSentiment]);
+  const iconToDisplay = useMemo(
+    () =>
+      getIconToDisplay(
+        sentiment.averageSentiment,
+        faArrowTrendUp,
+        faArrowTrendDown,
+        faArrowRight,
+        faQuestion
+      ),
+    [sentiment.averageSentiment]
+  );
 
   const timeAveragePrice = useMemo(() => {
     return bars.map((x) => {
@@ -49,7 +50,7 @@ export default function Stocks(props: InferGetServerSidePropsType<typeof getServ
   }, [bars]);
 
   return (
-    <>
+    <main className={styles.main}>
       <div className={styles.header}>
         <Image src={company.logo} alt="" width="50px" height="50px" />
         <h1>{company.name}</h1>
@@ -62,7 +63,7 @@ export default function Stocks(props: InferGetServerSidePropsType<typeof getServ
           <FontAwesomeIcon icon={iconToDisplay} size="6x" />
         </div>
       </div>
-    </>
+    </main>
   );
 }
 

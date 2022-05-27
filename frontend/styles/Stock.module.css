@@ -1,16 +1,9 @@
-.main {
-  margin: auto;
-  width: 75vw;
-}
-
 .header {
-  display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.body {
-  display: flex;
+.main {
   justify-content: center;
   align-items: center;
   flex-direction: row;

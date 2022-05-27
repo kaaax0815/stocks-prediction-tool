@@ -1,10 +1,10 @@
-import { Autocomplete, TextField } from '@mui/material';
+import { Autocomplete, Container, TextField } from '@mui/material';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
 import AutocompleteListBox from '../components/AutocompleteListBox';
-import styles from '../styles/Home.module.css';
+import styles from '../styles/Start.module.css';
 import { getSymbols } from '../util/api';
 
 export interface AutoComplete {
@@ -12,7 +12,7 @@ export interface AutoComplete {
   id: number;
 }
 
-function Home() {
+export function Start() {
   const [data, setData] = useState({
     loading: true,
     data: undefined as AutoComplete[] | undefined
@@ -40,7 +40,7 @@ function Home() {
   }
 
   return (
-    <div className={styles.container}>
+    <Container>
       <Head>
         <title>Stock Prediction Tool</title>
       </Head>
@@ -85,8 +85,6 @@ function Home() {
           Source Code
         </a>
       </footer>
-    </div>
+    </Container>
   );
 }
-
-export default Home;

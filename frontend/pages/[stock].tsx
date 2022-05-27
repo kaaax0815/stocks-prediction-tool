@@ -21,6 +21,7 @@ import {
   getSymbols,
   Sentiment
 } from '../util/api';
+import { timestampToDate } from '../util/date';
 
 export default function Stocks(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { bars, sentiment, company } = props;
@@ -41,8 +42,8 @@ export default function Stocks(props: InferGetServerSidePropsType<typeof getServ
     return bars.map((x) => {
       return {
         ...x,
-        average: ((x.h + x.l) / 2).toFixed(2),
-        date: new Date(x.t * 1000)
+        average: Math.round(((x.h + x.l) / 2) * 1e2) / 1e2,
+        date: timestampToDate(x.t)
       };
     });
   }, [bars]);

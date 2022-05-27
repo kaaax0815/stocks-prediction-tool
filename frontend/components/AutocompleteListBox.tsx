@@ -1,25 +1,30 @@
 import { ListItem, ListItemButton } from '@mui/material';
-import { HTMLAttributes } from 'react';
+import { forwardRef, HTMLAttributes } from 'react';
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
 
-export default function AutocompleteListBox(props: HTMLAttributes<HTMLElement>) {
+const AutocompleteListBox = forwardRef<HTMLDivElement>(function AutocompleteListBox(
+  props: HTMLAttributes<HTMLElement>,
+  ref
+) {
   const { children, role, ...other } = props;
   const itemCount = Array.isArray(children) ? children.length : 0;
 
   return (
-    <div {...other} role={role}>
-      <FixedSizeList
-        itemCount={itemCount}
-        height={280}
-        width="100%"
-        itemSize={60}
-        itemData={children}
-      >
-        {renderRow}
-      </FixedSizeList>
+    <div ref={ref}>
+      <div {...other} role={role}>
+        <FixedSizeList
+          itemCount={itemCount}
+          height={280}
+          width="100%"
+          itemSize={60}
+          itemData={children}
+        >
+          {renderRow}
+        </FixedSizeList>
+      </div>
     </div>
   );
-}
+});
 
 function renderRow(props: ListChildComponentProps) {
   const { index, style, data } = props;
@@ -30,3 +35,5 @@ function renderRow(props: ListChildComponentProps) {
     </ListItem>
   );
 }
+
+export default AutocompleteListBox;

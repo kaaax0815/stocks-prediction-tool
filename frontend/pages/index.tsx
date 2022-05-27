@@ -59,7 +59,7 @@ export default function Start() {
         <Autocomplete
           disablePortal
           options={data.data!}
-          ListboxComponent={AutocompleteListBox}
+          ListboxComponent={AutocompleteListBox as any}
           sx={{ width: 300 }}
           onChange={(_, value) => handleChosenValue(value?.label)}
           renderInput={(params) => <TextField {...params} label="Desired Stock" />}

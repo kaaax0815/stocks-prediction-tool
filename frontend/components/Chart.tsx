@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 
+import styles from '../styles/Chart.module.css';
 import { getSentiments, Sentiments } from '../util/api';
 import { timestampToDate } from '../util/date';
 
@@ -62,7 +63,7 @@ function ExtendedTooltip({ props }: { props: TooltipProps<ValueType, NameType> }
     return null;
   }
   return (
-    <div>
+    <div className={styles.tooltip}>
       {date.toDateString()}
       <br />${payload.value}
       <br />
@@ -70,3 +71,5 @@ function ExtendedTooltip({ props }: { props: TooltipProps<ValueType, NameType> }
     </div>
   );
 }
+
+// TODO: styling, backend (number -> "(up, down)/(normal, slightly), neutral, question")

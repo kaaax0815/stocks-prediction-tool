@@ -12,7 +12,7 @@ export interface AutoComplete {
   id: number;
 }
 
-export function Start() {
+export default function Start() {
   const [data, setData] = useState({
     loading: true,
     data: undefined as AutoComplete[] | undefined

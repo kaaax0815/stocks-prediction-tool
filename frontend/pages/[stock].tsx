@@ -53,8 +53,12 @@ export default function Stocks(props: InferGetServerSidePropsType<typeof getServ
   return (
     <Container>
       <header className={styles.header}>
-        <Image src={company.logo} alt="" width="50px" height="50px" />
-        <h1>{company.name}</h1>
+        <a className={styles.companyWebsite} href={company.weburl}>
+          <div style={{ marginRight: '15px' }}>
+            <Image src={company.logo} alt="" width="50px" height="50px" />
+          </div>
+          <h1>{company.name}</h1>
+        </a>
       </header>
       <main className={styles.main}>
         <div className={styles.chart}>

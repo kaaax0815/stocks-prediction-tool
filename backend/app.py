@@ -85,14 +85,14 @@ def sentiment():
         counter+=1
 
   if counter == 0:
-    return {"averageSentiment": None}
+    return {"averageSentiment": None, "data": []}
 
   averageSentiment = round(sumOfSentiment / counter, 4)
 
   timestamp = int(time.time())
   predictions.insert_one({"symbol": symbol, "timestamp": timestamp, "sentiment": averageSentiment})
 
-  return {"averageSentiment": averageSentiment}
+  return {"averageSentiment": averageSentiment, "data": news.data}
 
 
 @app.route('/symbols')

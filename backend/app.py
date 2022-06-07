@@ -79,10 +79,21 @@ def sentiment():
     return {"error": "Quota reached"}, 429
 
   for data in news.data:
+    dataAvgSen = 0.0
+    dataAvgSenLen = 0
     for entity in data.entities:
       if entity.sentiment_score is not None:
+        # calculate average sentiment per stock
         sumOfSentiment += entity.sentiment_score;
-        counter+=1
+        counter +=1
+        # calculate average sentiment per article
+        dataAvgSen += entity.sentiment_score;
+        dataAvgSenLen +=1
+    if dataAvgSenLen > 0:
+      data.avg_sentiment = round(dataAvgSen / dataAvgSenLen, 4)
+    else:
+      data.avg_sentiment = 0.0
+
 
   if counter == 0:
     return {"averageSentiment": None, "data": []}

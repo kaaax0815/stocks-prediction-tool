@@ -64,7 +64,8 @@ def getNews(symbol) -> News:
         'api_token': os.environ['MARKETAUX_KEY'],
         'symbols': symbol,
         'limit': 50,
-        'filter_entities': True
+        'filter_entities': True,
+        'language': 'en'
         })
 
     conn.request('GET', '/v1/news/all?{}'.format(params))

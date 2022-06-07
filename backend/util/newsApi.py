@@ -42,7 +42,7 @@ class Data():
         self.language = language
         self.published_at = published_at
         self.source = source
-        self.evant_score = relevant_score
+        self.relevant_score = relevant_score
         self.entities = entities
         self.similar = similar
 

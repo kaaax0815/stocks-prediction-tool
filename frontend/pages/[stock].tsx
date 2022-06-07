@@ -51,7 +51,7 @@ export default function Stocks(props: InferGetServerSidePropsType<typeof getServ
           <FontAwesomeIcon icon={iconToDisplay} size="6x" />
         </div>
       </main>
-      <div>
+      <div className={styles.news}>
         <h2>News</h2>
         {sentiment.data.map((article, aIndex) => (
           <a key={article.uuid} href={article.url} target="_blank" rel="noreferrer">

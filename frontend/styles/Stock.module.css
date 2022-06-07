@@ -26,6 +26,11 @@
   align-items: center;
 }
 
+.news > h2 {
+  text-align: center;
+  font-size: xx-large;
+}
+
 @media screen and (max-width: 768px) {
   .main {
     flex-direction: column-reverse;

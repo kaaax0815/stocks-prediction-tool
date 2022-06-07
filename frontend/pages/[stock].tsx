@@ -2,14 +2,14 @@ import {
   faArrowRight,
   faArrowTrendDown,
   faArrowTrendUp,
-  faQuestion
+  faQuestion,
+  IconDefinition
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Container } from '@mui/material';
+import { Container, Divider } from '@mui/material';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import { useMemo } from 'react';
 
 const Chart = dynamic(() => import('../components/Chart'), { ssr: false });
 import styles from '../styles/Stock.module.css';
@@ -26,29 +26,12 @@ import { timestampToDate } from '../util/date';
 import getIconToDisplay from '../util/iconToDisplay';
 
 export default function Stocks(props: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { bars, sentiment, company } = props;
+  const { sentiment, company, iconToDisplay, iconsToDisplay, graphData } = props;
 
-  const iconToDisplay = useMemo(
-    () =>
-      getIconToDisplay(
-        sentiment.averageSentiment,
-        faArrowTrendUp,
-        faArrowTrendDown,
-        faArrowRight,
-        faQuestion
-      ),
-    [sentiment.averageSentiment]
-  );
-
-  const timeAveragePrice = useMemo(() => {
-    return bars.map((x) => {
-      return {
-        ...x,
-        average: Math.round(((x.h + x.l) / 2) * 1e2) / 1e2,
-        date: timestampToDate(x.t)
-      };
-    });
-  }, [bars]);
+  const dateGraphData = graphData.map((bar) => ({
+    date: timestampToDate(bar.t),
+    ...bar
+  }));
 
   return (
     <Container>
@@ -62,20 +45,37 @@ export default function Stocks(props: InferGetServerSidePropsType<typeof getServ
       </header>
       <main className={styles.main}>
         <div className={styles.chart}>
-          <Chart data={timeAveragePrice} />
+          <Chart data={dateGraphData} />
         </div>
         <div className={styles.trend}>
           <FontAwesomeIcon icon={iconToDisplay} size="6x" />
         </div>
       </main>
+      <div>
+        <h2>News</h2>
+        {sentiment.data.map((article, aIndex) => (
+          <a key={article.uuid} href={article.url} target="_blank" rel="noreferrer">
+            <article className={styles.newsArticle}>
+              <header>
+                <h3>{article.title}</h3>
+                <FontAwesomeIcon icon={iconsToDisplay[aIndex]} size="2x" />
+              </header>
+              <p>{article.description || '...'}</p>
+            </article>
+            <Divider />
+          </a>
+        ))}
+      </div>
     </Container>
   );
 }
 
 export interface StockParams {
-  bars: Bar[];
   sentiment: Sentiment;
   company: Company;
+  iconToDisplay: IconDefinition;
+  iconsToDisplay: IconDefinition[];
+  graphData: (Bar & { average: number })[];
 }
 
 export const getServerSideProps: GetServerSideProps<StockParams> = async (context) => {
@@ -89,11 +89,37 @@ export const getServerSideProps: GetServerSideProps<StockParams> = async (contex
   const bars = await getBars(symbol);
   const sentiment = await getSentiment(symbol);
   const company = await getCompany(symbol);
+
+  const iconToDisplay = getIconToDisplay(
+    sentiment.averageSentiment,
+    faArrowTrendUp,
+    faArrowTrendDown,
+    faArrowRight,
+    faQuestion
+  );
+
+  const iconsToDisplay = sentiment.data.map((sentiment) =>
+    getIconToDisplay(
+      sentiment.avg_sentiment,
+      faArrowTrendUp,
+      faArrowTrendDown,
+      faArrowRight,
+      faQuestion
+    )
+  );
+
+  const graphData = bars.map((x) => ({
+    ...x,
+    average: Math.round(((x.h + x.l) / 2) * 1e2) / 1e2
+  }));
+
   return {
     props: {
-      bars,
       sentiment,
-      company
+      company,
+      iconToDisplay,
+      iconsToDisplay,
+      graphData
     }
   };
 };

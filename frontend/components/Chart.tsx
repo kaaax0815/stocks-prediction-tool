@@ -25,7 +25,6 @@ export default function Chart({ data }: ChartProps) {
           tickFormatter={(v: Date) => v.toLocaleDateString('de-DE', { month: 'long' })}
         />
         <YAxis tickFormatter={(v: number) => `$${v}`} />
-        {/*<Tooltip formatter={(v: number) => `$${v}`} labelFormatter={(v: Date) => v.toDateString()} />*/}
         <Tooltip content={(props) => <ExtendedTooltip props={props} />} />
       </LineChart>
     </ResponsiveContainer>

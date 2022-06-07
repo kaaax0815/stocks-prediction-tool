@@ -79,6 +79,16 @@ export interface Symbol {
 
 export interface Sentiment {
   averageSentiment: number | null;
+  data: SentimentData[];
+}
+
+export interface SentimentData {
+  uuid: string;
+  title: string;
+  description: string;
+  url: string;
+  published_at: string;
+  avg_sentiment: number;
 }
 
 export interface Sentiments {

@@ -1,3 +1,6 @@
+This repository is archived because the project deadline has passed.
+The grade of the project is not yet available.
+
 # 📈 Stocks Prediction Tool
 
 ## IT Software Project in year 11 with me and my partner

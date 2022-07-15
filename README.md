@@ -1,5 +1,5 @@
 This repository is archived because the project deadline has passed.
-The grade of the project is not yet available.
+The grade of the project is 15/15 points
 
 # 📈 Stocks Prediction Tool
 
